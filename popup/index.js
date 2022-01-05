@@ -4,25 +4,15 @@ init();
  * Setup
  */
 async function init() {
-  // innitial url setup
-  setUrl();
-  setFormSaveHandler();
-  setFormDeleteHandler();
+  const { title, url } = await getCurrentTab();
+  setTitleByUrl(title);
+  setFormSaveHandler(url);
+  setFormDeleteHandler(url);
+  setDatePickerRange();
+  setReactiveDaysHandler();
+  setReactiveDateHandler();
 
-  // initial date setup
-  const remindDays = document.querySelector(".remind-days");
-  const remindDate = document.querySelector(".remind-date");
-  setDatePickerRange(remindDate);
-
-  // reactive date change from "days"
-  remindDays.addEventListener("click", setRemindDate(remindDate));
-  // reactive date change from "date"
-  remindDate.addEventListener("change", (e) => {
-    const date = e.target.value;
-  });
-
-  function setUrl() {
-    const { title, url } = await getCurrentTab();
+  async function setTitleByUrl(title) {
     document.querySelector("#title").value = title;
   }
 
@@ -31,14 +21,31 @@ async function init() {
     form.addEventListener("formdata", onSubmit(url));
   }
 
-  function setDatePickerRange(datePicker) {
-    const today = formatDate(new Date());
-    datePicker.min = today;
-    datePicker.value = today;
-  }
   function setFormDeleteHandler() {
     const deleteBtn = document.querySelector("#deleteBtn");
     deleteBtn.addEventListener("click", onClickDeleteBtn(url));
+  }
+
+  function setDatePickerRange() {
+    const datePicker = document.querySelector(".remind-date");
+    const today = formatDate(new Date());
+    datePicker.min = today;
+    datePicker.value = formatDate(getRemindDate());
+  }
+
+  function setReactiveDaysHandler() {
+    const remindDays = document.querySelector(".remind-days");
+    const remindDate = document.querySelector(".remind-date");
+    remindDays.addEventListener("click", setRemindDate(remindDate));
+  }
+
+  function setReactiveDateHandler() {
+    const remindDays = document.querySelector(".remind-days");
+    const remindDate = document.querySelector(".remind-date");
+    remindDate.addEventListener("change", (e) => {
+      console.log(getRemindDays());
+      remindDays.value = getRemindDays();
+    });
   }
 }
 
@@ -105,10 +112,40 @@ function formatDate(date) {
 
 function setRemindDate(target) {
   return function (e) {
-    const today = new Date();
-    const daysFromToday = e.target.value;
-    today.setDate(today.getDate() + parseInt(daysFromToday));
-
-    target.value = formatDate(today);
+    target.value = formatDate(getRemindDate());
   };
+}
+
+function getRemindDate() {
+  const today = new Date();
+  const daysFromToday = document.querySelector(".remind-days").value;
+  today.setDate(today.getDate() + parseInt(daysFromToday));
+
+  return cloneDate(today);
+}
+
+function getRemindDays() {
+  const today = new Date();
+  const d = new Date(document.querySelector(".remind-date").value);
+
+  const utcToday = Date.UTC(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+    today.getHours(),
+    today.getMinutes(),
+    today.getSeconds(),
+    today.getMilliseconds()
+  );
+  const utcRemindDate = Date.UTC(
+    d.getFullYear(),
+    d.getMonth(),
+    d.getDate(),
+    d.getHours(),
+    d.getMinutes(),
+    d.getSeconds(),
+    d.getMilliseconds()
+  );
+
+  return Math.floor((utcRemindDate - utcToday) / 86400000);
 }
