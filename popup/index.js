@@ -12,8 +12,25 @@ async function init() {
   setReactiveDaysHandler();
   setReactiveDateHandler();
 
+  // tag handler
+  const tagInput = document.querySelector("#tag-input");
+  tagInput.addEventListener("keydown", (e) => {
+    if (e.isComposing || e.key !== "Enter") return;
+    e.preventDefault();
+
+    const tagName = e.target.value;
+    const newTag = document.createElement("li");
+    newTag.classList.add("tag");
+    newTag.innerText = tagName;
+
+    const targetElement = document.querySelector(".tag-input-box");
+    targetElement.insertAdjacentElement("beforebegin", newTag);
+
+    tagInput.value = "";
+  });
+
   async function setTitleByUrl(title) {
-    document.querySelector("#title").value = title;
+    document.querySelector("#title-input").value = title;
   }
 
   function setFormSaveHandler() {
@@ -27,21 +44,21 @@ async function init() {
   }
 
   function setDatePickerRange() {
-    const datePicker = document.querySelector(".remind-date");
+    const datePicker = document.querySelector("#remind-date");
     const today = formatDate(new Date());
     datePicker.min = today;
     datePicker.value = formatDate(getRemindDate());
   }
 
   function setReactiveDaysHandler() {
-    const remindDays = document.querySelector(".remind-days");
-    const remindDate = document.querySelector(".remind-date");
-    remindDays.addEventListener("click", setRemindDate(remindDate));
+    const remindDays = document.querySelector("#remind-days");
+    const remindDate = document.querySelector("#remind-date");
+    remindDays.addEventListener("change", setRemindDate(remindDate));
   }
 
   function setReactiveDateHandler() {
-    const remindDays = document.querySelector(".remind-days");
-    const remindDate = document.querySelector(".remind-date");
+    const remindDays = document.querySelector("#remind-days");
+    const remindDate = document.querySelector("#remind-date");
     remindDate.addEventListener("change", (e) => {
       console.log(getRemindDays());
       remindDays.value = getRemindDays();
@@ -62,6 +79,7 @@ function onSubmit(url) {
     }
 
     saveData(url, clenaedData);
+    alert("저장되었습니다!");
   };
 }
 
@@ -118,7 +136,7 @@ function setRemindDate(target) {
 
 function getRemindDate() {
   const today = new Date();
-  const daysFromToday = document.querySelector(".remind-days").value;
+  const daysFromToday = document.querySelector("#remind-days").value;
   today.setDate(today.getDate() + parseInt(daysFromToday));
 
   return cloneDate(today);
@@ -126,7 +144,7 @@ function getRemindDate() {
 
 function getRemindDays() {
   const today = new Date();
-  const d = new Date(document.querySelector(".remind-date").value);
+  const d = new Date(document.querySelector("#remind-date").value);
 
   const utcToday = Date.UTC(
     today.getFullYear(),

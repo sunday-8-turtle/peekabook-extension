@@ -10,18 +10,22 @@
     </header>
     <main>
       <form>
-        <section class="title">
+        <section id="title">
           <label for="title">이름</label>
-          <input name="title" type="text" id="title" required />
+          <input name="title" type="text" id="title-input" required />
         </section>
-        <section class="tags">
-          <label for="tags">태그</label>
-          <input name="tags" type="text" id="tags" required />
+        <section id="tag-box">
+          <label for="tag-input">태그</label>
+          <ul class="wrapper">
+            <li class="tag-input-box">
+              <input name="tag-input" type="text" id="tag-input" />
+            </li>
+          </ul>
         </section>
-        <section class="remind">
+        <section id="remind">
           <label for="tags">알림 날짜</label>
           <input
-            class="remind-days"
+            id="remind-days"
             min="1"
             max="99"
             type="number"
@@ -32,7 +36,7 @@
           />
           <span>일 뒤</span>
           <input
-            class="remind-date"
+            id="remind-date"
             min=""
             max=""
             type="date"
@@ -41,7 +45,7 @@
             required
           />
         </section>
-        <section class="description">
+        <section id="description">
           <textarea
             placeholder="설명을 입력하세요."
             name="description"

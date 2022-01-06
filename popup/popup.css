@@ -7,6 +7,10 @@
   box-sizing: border-box;
 }
 
+li {
+  list-style-type: none;
+}
+
 body {
   width: 300px;
 }
@@ -24,6 +28,7 @@ section:not(:last-child) {
 }
 
 section label {
+  min-width: 24px;
   margin-right: 12px;
 }
 
@@ -33,31 +38,55 @@ input {
   border: 0.5px solid gray;
 }
 
-.title input,
-.tags input {
+#title input,
+#tag-box input {
   flex-grow: 1;
 }
 
-.remind {
+#tag-box .wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  flex-gorw: 1;
+  padding: 0;
+  margin: 0;
+  border: 1px solid grey;
+  width: 100%;
+}
+
+#tag-input {
+  border: none;
+  outline: none;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  color: white;
+  background: black;
+  margin: 4px;
+  padding: 2px 6px;
+}
+
+#remind {
   justify-content: space-between;
 }
 
-.remind-days {
+#remind-days {
   width: 48px;
   text-align: center;
 }
 
-.remind-days + span {
+#remind-days + span {
   margin: 0 4px;
 }
 
-.remind-date {
+#remind-date {
   outline: 0;
   padding: 14px 4px;
   position: relative;
 }
 
-.remind-date::-webkit-calendar-picker-indicator {
+#remind-date::-webkit-calendar-picker-indicator {
   background: transparent;
   position: absolute;
   top: 0;
@@ -69,7 +98,7 @@ input {
   height: auto;
 }
 
-.description textarea {
+#description textarea {
   resize: none;
   padding: 8px;
   width: 100%;
