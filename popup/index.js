@@ -5,6 +5,9 @@ init();
  */
 async function init() {
   const { title, url } = await getCurrentTab();
+
+  if (isBookmarkDuplicate(url)) toggleDuplicate();
+
   setTitleByUrl(title);
   setFormSaveHandler(url);
   setFormDeleteHandler(url);
@@ -79,6 +82,7 @@ function onSubmit(url) {
     }
 
     saveData(url, clenaedData);
+    closePopup();
     alert("저장되었습니다!");
   };
 }
@@ -86,12 +90,18 @@ function onSubmit(url) {
 function onClickDeleteBtn(url) {
   return function () {
     deleteData(url);
+    closePopup();
+    alert("삭제되었습니다!");
   };
 }
 
 /*
  * Chrome APIs
  */
+function closePopup() {
+  window.close();
+}
+
 async function getCurrentTab() {
   const tab = await chrome.tabs.query({ currentWindow: true, active: true });
   return tab[0];
@@ -100,6 +110,17 @@ async function getCurrentTab() {
 /*
  * Utilities
  */
+function isBookmarkDuplicate(url) {
+  // (todo) send a request to the API server
+  if (loadData(url)) return true;
+  return false;
+}
+
+function toggleDuplicate() {
+  const alert = document.querySelector("div.alert");
+  alert.classList.toggle("hidden");
+}
+
 function saveData(key, value) {
   window.localStorage.setItem(key, JSON.stringify(value));
 }

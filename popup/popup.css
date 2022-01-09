@@ -1,6 +1,7 @@
 :root {
   --primary: #0ea5e9;
   --danger: #ef4444;
+  --warning: #eab308;
 }
 
 * {
@@ -132,4 +133,14 @@ footer .btn:last-child {
 
 .btn-primary {
   background: var(--primary);
+}
+
+.alert {
+  padding: 12px 4px;
+  color: white;
+  background: var(--danger);
+}
+
+.hidden {
+  display: none;
 }
