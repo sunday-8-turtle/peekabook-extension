@@ -144,3 +144,11 @@ footer .btn:last-child {
 .hidden {
   display: none;
 }
+
+.test {
+  position: fixed;
+  z-index: 500;
+  bottom: 50px;
+  height: 500px;
+  background-color: red;
+}

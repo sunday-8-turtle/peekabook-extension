@@ -5,7 +5,6 @@ init();
  */
 async function init() {
   const { title, url } = await getCurrentTab();
-
   if (isBookmarkDuplicate(url)) toggleDuplicate();
 
   setTitleByUrl(title);
@@ -14,23 +13,7 @@ async function init() {
   setDatePickerRange();
   setReactiveDaysHandler();
   setReactiveDateHandler();
-
-  // tag handler
-  const tagInput = document.querySelector("#tag-input");
-  tagInput.addEventListener("keydown", (e) => {
-    if (e.isComposing || e.key !== "Enter") return;
-    e.preventDefault();
-
-    const tagName = e.target.value;
-    const newTag = document.createElement("li");
-    newTag.classList.add("tag");
-    newTag.innerText = tagName;
-
-    const targetElement = document.querySelector(".tag-input-box");
-    targetElement.insertAdjacentElement("beforebegin", newTag);
-
-    tagInput.value = "";
-  });
+  setTagHandler();
 
   async function setTitleByUrl(title) {
     document.querySelector("#title-input").value = title;
@@ -65,6 +48,24 @@ async function init() {
     remindDate.addEventListener("change", (e) => {
       console.log(getRemindDays());
       remindDays.value = getRemindDays();
+    });
+  }
+
+  function setTagHandler() {
+    const tagInput = document.querySelector("#tag-input");
+    tagInput.addEventListener("keydown", (e) => {
+      if (e.isComposing || e.key !== "Enter") return;
+      e.preventDefault();
+
+      const tagName = e.target.value;
+      const newTag = document.createElement("li");
+      newTag.classList.add("tag");
+      newTag.innerText = tagName;
+
+      const targetElement = document.querySelector(".tag-input-box");
+      targetElement.insertAdjacentElement("beforebegin", newTag);
+
+      tagInput.value = "";
     });
   }
 }
@@ -122,14 +123,17 @@ function toggleDuplicate() {
 }
 
 function saveData(key, value) {
+  // (todo) send a request to the API server
   window.localStorage.setItem(key, JSON.stringify(value));
 }
 
 function loadData(key) {
+  // (todo) send a request to the API server
   return JSON.parse(window.localStorage.getItem(key));
 }
 
 function deleteData(key) {
+  // (todo) send a request to the API server
   window.localStorage.removeItem(key);
 }
 
