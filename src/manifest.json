@@ -4,7 +4,7 @@
   "version": "1.0",
   "manifest_version": 3,
   "background": {
-    "service_worker": "./background/index.js"
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
@@ -12,7 +12,7 @@
         "https://*.com/*"
       ],
       "js": [
-        "contentScript/index.js"
+        "contentScript.js"
       ]
     }
   ],
@@ -20,8 +20,14 @@
     "tabs"
   ],
   "action": {
-    "default_popup": "popup/popup.html",
-    "default_icon": {}
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "16x16_비활성.png"
+    }
   },
-  "icons": {}
+  "icons": {
+    "16": "16x16_비활성.png",
+    "48": "48x48.png",
+    "128": "128x128.png"
+  }
 }

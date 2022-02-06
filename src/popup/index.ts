@@ -1,9 +1,13 @@
+import "./popup.scss";
+
 init();
 
 /*
  * Setup
  */
 async function init() {
+  triggerIconChange();
+
   const { title, url } = await getCurrentTab();
   if (isBookmarkDuplicate(url)) toggleDuplicate();
 
@@ -16,21 +20,23 @@ async function init() {
   setTagHandler();
 
   async function setTitleByUrl(title) {
-    document.querySelector("#title-input").value = title;
+    (document.querySelector("#title-input") as HTMLInputElement).value = title;
   }
 
-  function setFormSaveHandler() {
+  function setFormSaveHandler(url) {
     const form = document.querySelector("form");
     form.addEventListener("formdata", onSubmit(url));
   }
 
-  function setFormDeleteHandler() {
+  function setFormDeleteHandler(url) {
     const deleteBtn = document.querySelector("#deleteBtn");
     deleteBtn.addEventListener("click", onClickDeleteBtn(url));
   }
 
   function setDatePickerRange() {
-    const datePicker = document.querySelector("#remind-date");
+    const datePicker = document.querySelector(
+      "#remind-date"
+    ) as HTMLInputElement;
     const today = formatDate(new Date());
     datePicker.min = today;
     datePicker.value = formatDate(getRemindDate());
@@ -43,26 +49,31 @@ async function init() {
   }
 
   function setReactiveDateHandler() {
-    const remindDays = document.querySelector("#remind-days");
-    const remindDate = document.querySelector("#remind-date");
+    const remindDays = document.querySelector(
+      "#remind-days"
+    ) as HTMLInputElement;
+    const remindDate = document.querySelector(
+      "#remind-date"
+    ) as HTMLInputElement;
     remindDate.addEventListener("change", (e) => {
-      console.log(getRemindDays());
-      remindDays.value = getRemindDays();
+      remindDays.value = getRemindDays().toString();
     });
   }
 
   function setTagHandler() {
-    const tagInput = document.querySelector("#tag-input");
+    const tagInput = document.querySelector("#tag-input") as HTMLInputElement;
     tagInput.addEventListener("keydown", (e) => {
       if (e.isComposing || e.key !== "Enter") return;
       e.preventDefault();
 
-      const tagName = e.target.value;
+      const tagName = (e.target as HTMLInputElement).value;
       const newTag = document.createElement("li");
       newTag.classList.add("tag");
       newTag.innerText = tagName;
 
-      const targetElement = document.querySelector(".tag-input-box");
+      const targetElement = document.querySelector(
+        ".tag-input-box"
+      ) as HTMLElement;
       targetElement.insertAdjacentElement("beforebegin", newTag);
 
       tagInput.value = "";
@@ -99,6 +110,11 @@ function onClickDeleteBtn(url) {
 /*
  * Chrome APIs
  */
+function triggerIconChange() {
+  chrome.runtime.sendMessage({ type: "activate-icon" });
+  chrome.runtime.connect({ name: "popup" });
+}
+
 function closePopup() {
   window.close();
 }
@@ -145,10 +161,10 @@ function formatDate(date) {
   let year = date.getFullYear();
 
   let month = parseInt(date.getMonth() + 1);
-  if (month < 10) month = "0" + month;
+  if (month < 10) month = parseInt("0" + month);
 
   let day = parseInt(date.getDate());
-  if (day < 10) day = "0" + day;
+  if (day < 10) day = parseInt("0" + day);
 
   return `${year}-${month}-${day}`;
 }
@@ -161,7 +177,9 @@ function setRemindDate(target) {
 
 function getRemindDate() {
   const today = new Date();
-  const daysFromToday = document.querySelector("#remind-days").value;
+  const daysFromToday = (
+    document.querySelector("#remind-days") as HTMLInputElement
+  ).value;
   today.setDate(today.getDate() + parseInt(daysFromToday));
 
   return cloneDate(today);
@@ -169,7 +187,9 @@ function getRemindDate() {
 
 function getRemindDays() {
   const today = new Date();
-  const d = new Date(document.querySelector("#remind-date").value);
+  const d = new Date(
+    (document.querySelector("#remind-date") as HTMLInputElement).value
+  );
 
   const utcToday = Date.UTC(
     today.getFullYear(),
