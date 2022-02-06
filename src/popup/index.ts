@@ -1,4 +1,4 @@
-import "./popup.scss";
+import "./index.scss";
 
 init();
 
