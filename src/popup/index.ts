@@ -156,8 +156,7 @@ function onSubmit() {
     // add notidate
     const notidate = getFormattedRemindDate();
     formData.append("notidate", notidate);
-
-    createBookmark(2);
+    // createBookmark(2);
     // closePopup();
   };
 }
@@ -234,6 +233,8 @@ function cloneDate(date) {
 }
 
 function formatDate(date) {
+  if (date == -1) return "";
+
   let year = date.getFullYear();
 
   let month = date.getMonth() + 1;
@@ -250,8 +251,10 @@ function getRemindDate() {
   const daysFromToday = (
     document.querySelector("#noti > span") as HTMLInputElement
   ).dataset.notiDate;
-  today.setDate(today.getDate() + parseInt(daysFromToday));
 
+  if (daysFromToday === "끄기") return -1;
+
+  today.setDate(today.getDate() + parseInt(daysFromToday));
   return cloneDate(today);
 }
 
