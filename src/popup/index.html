@@ -2,64 +2,56 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard-dynamic-subset.css"
+    />
   </head>
   <body>
-    <header>
-      <h1>Pickaboo</h1>
-    </header>
-    <div class="alert hidden">⚠️ 다시 저장하시겠습니까?</div>
-    <main>
-      <form>
-        <section id="title">
-          <label for="title">이름</label>
-          <input name="title" type="text" id="title-input" required />
-        </section>
-        <section id="tag-box">
-          <label for="tag-input">태그</label>
-          <ul class="wrapper">
-            <li class="tag-input-box">
-              <input name="tag-input" type="text" id="tag-input" />
-            </li>
-          </ul>
-        </section>
-        <section id="remind">
-          <label for="tags">알림 날짜</label>
-          <input
-            id="remind-days"
-            min="1"
-            max="99"
-            type="number"
-            id="remindDays"
-            name="remindDays"
-            value="30"
-            required
-          />
-          <span>일 뒤</span>
-          <input
-            id="remind-date"
-            type="date"
-            id="remindDate"
-            name="remindDate"
-            required
-          />
-        </section>
-        <section id="description">
-          <textarea
-            placeholder="설명을 입력하세요."
-            name="description"
-            id="description"
-            rows="10"
-            cols="50"
-          ></textarea>
-        </section>
-        <footer>
-          <button type="button" id="deleteBtn" class="btn btn-danger">
-            삭제
-          </button>
-          <button id="saveBtn" class="btn btn-primary">저장</button>
-        </footer>
-      </form>
-    </main>
-    <script src="index.js"></script>
+    <div class="container">
+      <nav>
+        <div id="logo">
+          <img width="100%" src="logo.png" alt="피카북 로고" />
+        </div>
+        <button id="noti">
+          <img src="bell.svg" alt="알림 아이콘" />
+          <span data-noti-date="7">7일</span>
+        </button>
+        <ul id="noti-option-dropdown" class="hide">
+          <li>끄기</li>
+          <li>7일</li>
+          <li>14일</li>
+          <li>30일</li>
+        </ul>
+      </nav>
+      <main>
+        <form>
+          <div id="bookmark-meta">
+            <input name="bookmark-title" placeholder="즐겨찾기 이름" value="북마크 제목"></input>
+            <input name="bookmark-url" type="hidden">
+            <figure id="bookmark-url-with-img">
+              <img
+                src="16x16_활성.png"
+                alt="북마크 로고 이미지"
+              />
+              <figcaption>www.naver.com</figcaption>
+            </figure>
+          </div>
+          <div id="bookmark-memo">
+            <textarea name="bookmark-memo" placeholder="메모"></textarea>
+          </div>
+          <div id="bookmark-tag">
+            <input name="bookmark-tag" type="text" placeholder="태그">
+            <ul id="tag-list">
+            </ul>
+          </div>
+          <div id="bookmark-actions">
+            <button name="cancel" type="button">취소</button>
+            <button name="submit">저장</button>
+          </div>
+        </form>
+      </main>
+    </div>
   </body>
 </html>

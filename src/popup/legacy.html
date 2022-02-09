@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <header>
+      <h1>Pickaboo</h1>
+    </header>
+    <base-input></base-input>
+    <div class="alert hidden">⚠️ 다시 저장하시겠습니까?</div>
+    <main>
+      <form>
+        <section id="title">
+          <label for="title">이름</label>
+          <input name="title" type="text" id="title-input" required />
+        </section>
+        <section id="tag-box">
+          <label for="tag-input">태그</label>
+          <ul class="wrapper">
+            <li class="tag-input-box">
+              <input name="tag-input" type="text" id="tag-input" />
+            </li>
+          </ul>
+        </section>
+        <section id="remind">
+          <label for="tags">알림 날짜</label>
+          <input
+            id="remind-days"
+            min="1"
+            max="99"
+            type="number"
+            id="remindDays"
+            name="remindDays"
+            value="30"
+            required
+          />
+          <span>일 뒤</span>
+          <input
+            id="remind-date"
+            type="date"
+            id="remindDate"
+            name="remindDate"
+            required
+          />
+        </section>
+        <section id="description">
+          <textarea
+            placeholder="설명을 입력하세요."
+            name="description"
+            id="description"
+            rows="10"
+            cols="50"
+          ></textarea>
+        </section>
+        <footer>
+          <button type="button" id="deleteBtn" class="btn btn-danger">
+            삭제
+          </button>
+          <button id="saveBtn" class="btn btn-primary">저장</button>
+        </footer>
+      </form>
+    </main>
+    <script src="index.js"></script>
+  </body>
+</html>

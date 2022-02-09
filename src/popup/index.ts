@@ -1,4 +1,5 @@
 import "./index.scss";
+import { createBookmark } from "../apis";
 
 init();
 
@@ -8,102 +9,203 @@ init();
 async function init() {
   triggerIconChange();
 
-  const { title, url } = await getCurrentTab();
-  if (isBookmarkDuplicate(url)) toggleDuplicate();
+  const { title, url, id: tabId } = await getCurrentTab();
 
-  setTitleByUrl(title);
-  setFormSaveHandler(url);
-  setFormDeleteHandler(url);
-  setDatePickerRange();
-  setReactiveDaysHandler();
-  setReactiveDateHandler();
+  setUrl(url);
+  setTitle(title);
+  setDesc(tabId);
+  setNotiHandler();
+  setFormSaveHandler();
+  setFormCancelHandler();
   setTagHandler();
 
-  async function setTitleByUrl(title) {
-    (document.querySelector("#title-input") as HTMLInputElement).value = title;
+  function setTitle(title) {
+    (
+      document.querySelector('input[name="bookmark-title"]') as HTMLInputElement
+    ).value = title;
   }
 
-  function setFormSaveHandler(url) {
-    const form = document.querySelector("form");
-    form.addEventListener("formdata", onSubmit(url));
+  function setUrl(url) {
+    (
+      document.querySelector(
+        "#bookmark-url-with-img > figcaption"
+      ) as HTMLInputElement
+    ).innerText = url;
+
+    (
+      document.querySelector("input[name='bookmark-url']") as HTMLInputElement
+    ).value = url;
   }
 
-  function setFormDeleteHandler(url) {
-    const deleteBtn = document.querySelector("#deleteBtn");
-    deleteBtn.addEventListener("click", onClickDeleteBtn(url));
-  }
+  function setDesc(tabId) {
+    chrome.tabs.connect(tabId);
+    chrome.runtime.onMessage.addListener((message) => {
+      if (message.type === "og" && message.desc) {
+        (
+          document.querySelector(
+            'textarea[name="bookmark-memo"]'
+          ) as HTMLInputElement
+        ).value = message.desc;
 
-  function setDatePickerRange() {
-    const datePicker = document.querySelector(
-      "#remind-date"
-    ) as HTMLInputElement;
-    const today = formatDate(new Date());
-    datePicker.min = today;
-    datePicker.value = formatDate(getRemindDate());
-  }
-
-  function setReactiveDaysHandler() {
-    const remindDays = document.querySelector("#remind-days");
-    const remindDate = document.querySelector("#remind-date");
-    remindDays.addEventListener("change", setRemindDate(remindDate));
-  }
-
-  function setReactiveDateHandler() {
-    const remindDays = document.querySelector(
-      "#remind-days"
-    ) as HTMLInputElement;
-    const remindDate = document.querySelector(
-      "#remind-date"
-    ) as HTMLInputElement;
-    remindDate.addEventListener("change", (e) => {
-      remindDays.value = getRemindDays().toString();
+        const bookmarkImage = document.querySelector(
+          "#bookmark-url-with-img > img"
+        ) as HTMLImageElement;
+        bookmarkImage.src = message.image;
+        bookmarkImage.onerror = function () {
+          this.src = "16x16_활성.png";
+        };
+      }
     });
+  }
+
+  function setNotiHandler() {
+    // set noti date icon
+    const notiDateSpan = document.querySelector(
+      "#noti > span"
+    ) as HTMLSpanElement;
+    setNotiIcon(notiDateSpan);
+
+    // dropdown select event
+    const notiDropdown = document.querySelector(
+      "#noti-option-dropdown"
+    ) as HTMLUListElement;
+    const notiDropdownItemList = notiDropdown.querySelectorAll("li");
+    notiDropdownItemList.forEach((notiItem) => {
+      notiItem.addEventListener("click", updateNotiDate(notiDateSpan));
+    });
+
+    // dropdown close event
+    window.addEventListener("click", toggleNotiDropdown(notiDropdown));
+
+    //dropdown open event
+    const notiBtn = document.querySelector("#noti") as HTMLButtonElement;
+    notiBtn.addEventListener("click", onClickNoti(notiDropdown));
+
+    function toggleNotiDropdown(notiDropdown) {
+      return function () {
+        notiDropdown.classList.remove("show");
+      };
+    }
+
+    function updateNotiDate(notiDateSpan) {
+      return function (e) {
+        const selectedNotiDate = e.target.innerText;
+        notiDateSpan.dataset.notiDate = selectedNotiDate;
+        notiDateSpan.innerText = selectedNotiDate;
+        setNotiIcon(notiDateSpan);
+      };
+    }
+
+    function setNotiIcon(notiDateSpan) {
+      const notiImg = document.querySelector("#noti > img") as HTMLImageElement;
+      const notiDate = notiDateSpan.dataset.notiDate;
+
+      let notiImgSrc = "bell.svg";
+      let notiTextColor = "#868E96";
+      if (notiDate === "끄기") {
+        notiImgSrc = "bell-off.svg";
+        notiTextColor = "#CED4DA";
+      }
+      notiImg.src = notiImgSrc;
+      notiDateSpan.style.color = notiTextColor;
+    }
+  }
+
+  function setFormSaveHandler() {
+    const form = document.querySelector("form");
+    form.addEventListener("submit", onSubmit());
+  }
+
+  function setFormCancelHandler() {
+    const deleteBtn = document.querySelector("button[name='cancel']");
+    deleteBtn.addEventListener("click", onClickCancelBtn());
   }
 
   function setTagHandler() {
-    const tagInput = document.querySelector("#tag-input") as HTMLInputElement;
-    tagInput.addEventListener("keydown", (e) => {
-      if (e.isComposing || e.key !== "Enter") return;
-      e.preventDefault();
-
-      const tagName = (e.target as HTMLInputElement).value;
-      const newTag = document.createElement("li");
-      newTag.classList.add("tag");
-      newTag.innerText = tagName;
-
-      const targetElement = document.querySelector(
-        ".tag-input-box"
-      ) as HTMLElement;
-      targetElement.insertAdjacentElement("beforebegin", newTag);
-
-      tagInput.value = "";
-    });
+    const tagInput = document.querySelector(
+      'input[name="bookmark-tag"]'
+    ) as HTMLInputElement;
+    tagInput.addEventListener("keydown", onCreateTag(tagInput));
   }
 }
 
 /*
  * Event Handlers
  */
-function onSubmit(url) {
+function onClickNoti(notiDropdown) {
   return function (e) {
-    const formData = e.formData;
-
-    const clenaedData = {};
-    for (const pair of formData.entries()) {
-      clenaedData[pair[0]] = pair[1];
-    }
-
-    saveData(url, clenaedData);
-    closePopup();
-    alert("저장되었습니다!");
+    e.stopPropagation();
+    notiDropdown.classList.add("show");
   };
 }
 
-function onClickDeleteBtn(url) {
+function onSubmit() {
+  return function (e) {
+    e.preventDefault();
+
+    // add tag list to formdata
+    const form = document.querySelector("form") as HTMLFormElement;
+    const formData = new FormData(form);
+
+    const tagList = document.querySelectorAll("#tag-list > li");
+    tagList.forEach((li) => {
+      const tagName = li.querySelector("span").dataset.tagName;
+      formData.append("tag", tagName);
+    });
+
+    // add notidate
+    const notidate = getFormattedRemindDate();
+    formData.append("notidate", notidate);
+
+    createBookmark(2);
+    // closePopup();
+  };
+}
+
+function onClickCancelBtn() {
   return function () {
-    deleteData(url);
     closePopup();
-    alert("삭제되었습니다!");
+  };
+}
+
+function onDeleteTag(newTag) {
+  return function () {
+    newTag.remove();
+  };
+}
+
+function onCreateTag(tagInput) {
+  return function (e) {
+    // (important) the order matters here
+    if (e.isComposing || e.key !== "Enter") return;
+    e.preventDefault();
+    if (!(e.target as HTMLInputElement).value.trim()) return;
+
+    const targetElement = document.querySelector("#tag-list") as HTMLElement;
+    const tagName = (e.target as HTMLInputElement).value;
+    const tagNameForDisplay = getTagNameForDisplay(tagName);
+
+    const newTag = document.createElement("li");
+    const newSpan = document.createElement("span");
+    newSpan.innerText = tagNameForDisplay;
+    newSpan.dataset.tagName = tagName;
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.addEventListener("click", onDeleteTag(newTag));
+    deleteBtn.innerHTML = `<img src="icon-x.svg" alt="태그 삭제 아이콘">`;
+
+    newTag.append(newSpan, deleteBtn);
+    targetElement.append(newTag);
+
+    tagInput.value = "";
+
+    function getTagNameForDisplay(tagName) {
+      let tagNameForDisplay = tagName;
+      if (tagNameForDisplay.length >= 8) {
+        tagNameForDisplay = tagNameForDisplay.slice(0, 7) + "...";
+      }
+      return tagNameForDisplay;
+    }
   };
 }
 
@@ -127,32 +229,6 @@ async function getCurrentTab() {
 /*
  * Utilities
  */
-function isBookmarkDuplicate(url) {
-  // (todo) send a request to the API server
-  if (loadData(url)) return true;
-  return false;
-}
-
-function toggleDuplicate() {
-  const alert = document.querySelector("div.alert");
-  alert.classList.toggle("hidden");
-}
-
-function saveData(key, value) {
-  // (todo) send a request to the API server
-  window.localStorage.setItem(key, JSON.stringify(value));
-}
-
-function loadData(key) {
-  // (todo) send a request to the API server
-  return JSON.parse(window.localStorage.getItem(key));
-}
-
-function deleteData(key) {
-  // (todo) send a request to the API server
-  window.localStorage.removeItem(key);
-}
-
 function cloneDate(date) {
   return new Date(date.valueOf());
 }
@@ -160,29 +236,27 @@ function cloneDate(date) {
 function formatDate(date) {
   let year = date.getFullYear();
 
-  let month = parseInt(date.getMonth() + 1);
-  if (month < 10) month = parseInt("0" + month);
+  let month = date.getMonth() + 1;
+  if (month < 10) month = "0" + month.toString();
 
-  let day = parseInt(date.getDate());
-  if (day < 10) day = parseInt("0" + day);
+  let day = date.getDate();
+  if (day < 10) day = "0" + day.toString();
 
   return `${year}-${month}-${day}`;
-}
-
-function setRemindDate(target) {
-  return function (e) {
-    target.value = formatDate(getRemindDate());
-  };
 }
 
 function getRemindDate() {
   const today = new Date();
   const daysFromToday = (
-    document.querySelector("#remind-days") as HTMLInputElement
-  ).value;
+    document.querySelector("#noti > span") as HTMLInputElement
+  ).dataset.notiDate;
   today.setDate(today.getDate() + parseInt(daysFromToday));
 
   return cloneDate(today);
+}
+
+function getFormattedRemindDate() {
+  return formatDate(getRemindDate());
 }
 
 function getRemindDays() {
