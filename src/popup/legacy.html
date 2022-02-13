@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
   </head>
-  <link rel="stylesheet" href="popup.css" />
   <body>
     <header>
-      <h1>Pickabook</h1>
+      <h1>Pickaboo</h1>
     </header>
-    <div class="alert hidden">⚠️ 이미 저장한 적 있는 북마크입니다.</div>
+    <base-input></base-input>
+    <div class="alert hidden">⚠️ 다시 저장하시겠습니까?</div>
     <main>
       <form>
         <section id="title">
@@ -38,8 +38,6 @@
           <span>일 뒤</span>
           <input
             id="remind-date"
-            min=""
-            max=""
             type="date"
             id="remindDate"
             name="remindDate"

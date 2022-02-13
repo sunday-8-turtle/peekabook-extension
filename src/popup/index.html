@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard-dynamic-subset.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <nav>
+        <div id="logo">
+          <img width="100%" src="logo.png" alt="피카북 로고" />
+        </div>
+        <button id="noti">
+          <img src="bell.svg" alt="알림 아이콘" />
+          <span data-noti-date="7">7일</span>
+        </button>
+        <ul id="noti-option-dropdown" class="hide">
+          <li>끄기</li>
+          <li>7일</li>
+          <li>14일</li>
+          <li>30일</li>
+        </ul>
+      </nav>
+      <main>
+        <form>
+          <div id="bookmark-meta">
+            <input name="title" placeholder="즐겨찾기 이름" value="북마크 제목"></input>
+            <input name="url" type="hidden">
+            <figure id="bookmark-url-with-img">
+              <img
+                src="16x16_활성.png"
+                alt="북마크 로고 이미지"
+              />
+              <figcaption>www.naver.com</figcaption>
+            </figure>
+          </div>
+          <div id="bookmark-memo">
+            <textarea name="description" placeholder="메모"></textarea>
+          </div>
+          <div id="bookmark-tag">
+            <input name="bookmark-tag" type="text" placeholder="태그">
+            <ul id="tag-list">
+            </ul>
+          </div>
+          <div id="bookmark-actions">
+            <button name="cancel" type="button">취소</button>
+            <button name="submit">저장</button>
+          </div>
+        </form>
+      </main>
+    </div>
+  </body>
+</html>
