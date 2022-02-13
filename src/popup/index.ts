@@ -191,12 +191,14 @@ function onCreateTag(tagInput) {
     // (important) the order matters here
     if (e.isComposing || e.key !== "Enter") return;
     e.preventDefault();
-    if (!(e.target as HTMLInputElement).value.trim()) return;
+
+    const tagName = (e.target as HTMLInputElement).value;
+    if (!tagName.trim()) return;
 
     const targetElement = document.querySelector("#tag-list") as HTMLElement;
-    const tagName = (e.target as HTMLInputElement).value;
-    const tagNameForDisplay = getTagNameForDisplay(tagName);
+    if (isDuplicated(tagName, targetElement)) return;
 
+    const tagNameForDisplay = getTagNameForDisplay(tagName);
     const newTag = document.createElement("li");
     const newSpan = document.createElement("span");
     newSpan.innerText = tagNameForDisplay;
@@ -210,6 +212,17 @@ function onCreateTag(tagInput) {
     targetElement.append(newTag);
 
     tagInput.value = "";
+
+    function isDuplicated(tagName, targetElement) {
+      let result = false;
+      const tagList = targetElement.querySelectorAll("li");
+      tagList.forEach((tag) => {
+        if (tagName === tag.querySelector("span").dataset.tagName) {
+          result = true;
+        }
+      });
+      return result;
+    }
 
     function getTagNameForDisplay(tagName) {
       let tagNameForDisplay = tagName;
