@@ -1,5 +1,7 @@
 import "./index.scss";
-import { createBookmark } from "../apis";
+import { getUser } from "../apis/user";
+import { createBookmark } from "../apis/bookmark";
+import { bookmarkRequest } from "../types/bookmark.types";
 
 init();
 
@@ -7,9 +9,10 @@ init();
  * Setup
  */
 async function init() {
-  triggerIconChange();
-
   const { title, url, id: tabId } = await getCurrentTab();
+
+  triggerIconChange();
+  checkIfLoggedIn();
 
   setUrl(url);
   setTitle(title);
@@ -20,9 +23,8 @@ async function init() {
   setTagHandler();
 
   function setTitle(title) {
-    (
-      document.querySelector('input[name="bookmark-title"]') as HTMLInputElement
-    ).value = title;
+    (document.querySelector('input[name="title"]') as HTMLInputElement).value =
+      title;
   }
 
   function setUrl(url) {
@@ -32,9 +34,8 @@ async function init() {
       ) as HTMLInputElement
     ).innerText = url;
 
-    (
-      document.querySelector("input[name='bookmark-url']") as HTMLInputElement
-    ).value = url;
+    (document.querySelector("input[name='url']") as HTMLInputElement).value =
+      url;
   }
 
   function setDesc(tabId) {
@@ -43,7 +44,7 @@ async function init() {
       if (message.type === "og" && message.desc) {
         (
           document.querySelector(
-            'textarea[name="bookmark-memo"]'
+            'textarea[name="description"]'
           ) as HTMLInputElement
         ).value = message.desc;
 
@@ -143,21 +144,33 @@ function onSubmit() {
   return function (e) {
     e.preventDefault();
 
+    const requestData: bookmarkRequest = {
+      title: "",
+      url: "",
+      description: "",
+      tags: [],
+      notidate: "",
+    };
+
     // add tag list to formdata
     const form = document.querySelector("form") as HTMLFormElement;
     const formData = new FormData(form);
+    for (const entries of formData.entries()) {
+      if (entries[0] === "bookmark-tag") continue;
+      requestData[entries[0]] = entries[1];
+    }
 
     const tagList = document.querySelectorAll("#tag-list > li");
     tagList.forEach((li) => {
       const tagName = li.querySelector("span").dataset.tagName;
-      formData.append("tag", tagName);
+      requestData.tags.push(tagName);
     });
 
     // add notidate
     const notidate = getFormattedRemindDate();
-    formData.append("notidate", notidate);
-    // createBookmark(2);
-    // closePopup();
+    requestData.notidate = notidate;
+
+    createBookmark(requestData);
   };
 }
 
@@ -211,6 +224,18 @@ function onCreateTag(tagInput) {
 /*
  * Chrome APIs
  */
+async function checkIfLoggedIn() {
+  chrome.storage.sync.get(["token"], async function (result) {
+    const res = await getUser();
+    if (!result.token || res.errorCode === "AUTH_INVALID_TOKEN") {
+      chrome.tabs.create({
+        active: true,
+        url: process.env.VUE_APP_URL,
+      });
+    }
+  });
+}
+
 function triggerIconChange() {
   chrome.runtime.sendMessage({ type: "activate-icon" });
   chrome.runtime.connect({ name: "popup" });

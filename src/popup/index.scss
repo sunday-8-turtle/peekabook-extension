@@ -126,7 +126,7 @@ nav {
   flex-direction: column;
   justify-content: space-between;
 
-  input[name="bookmark-title"] {
+  input[name="title"] {
     height: 26px;
 
     color: rgba(52, 58, 64, 1);
@@ -173,7 +173,7 @@ nav {
 }
 
 #bookmark-memo {
-  textarea[name="bookmark-memo"] {
+  textarea[name="description"] {
     width: 272px;
     height: 104px;
     padding: 10px 12px;

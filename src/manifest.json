@@ -19,8 +19,14 @@
   ],
   "permissions": [
     "tabs",
-    "scripting"
+    "scripting",
+    "storage"
   ],
+  "externally_connectable": {
+    "matches": [
+      "*://localhost/*"
+    ]
+  },
   "action": {
     "default_popup": "index.html",
     "default_icon": {

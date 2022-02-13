@@ -7,9 +7,9 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   entry: {
-    popup: "./src/popup/index.ts",
-    background: "./src/background/index.ts",
-    contentScript: "./src/contentScript/index.ts",
+    popup: path.resolve(__dirname, "./src/popup/index.ts"),
+    background: path.resolve(__dirname, "./src/background/index.ts"),
+    contentScript: path.resolve(__dirname, "./src/contentScript/index.ts"),
   },
   module: {
     rules: [{ test: /\.tsx?$/, use: "ts-loader", exclude: /node_modules/ }],
@@ -20,7 +20,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
     new HtmlWebpackPlugin({
-      template: "src/popup/index.html",
+      template: "./src/popup/index.html",
       excludeAssets: [
         "contentScript.js",
         "background.js",
