@@ -1,3 +1,8 @@
+:root {
+  --primary-pink: #ff69b4;
+  --primary-pink-bg: #ffecf5;
+}
+
 // 초기화
 * {
   padding: 0;
@@ -138,7 +143,7 @@ nav {
 
     border: none;
     outline: none;
-    caret-color: rgba(253, 106, 132, 1);
+    caret-color: var(--primary-pink);
 
     ::placeholder {
       font-style: normal;
@@ -189,7 +194,7 @@ nav {
     border-radius: 4px;
 
     outline: none;
-    caret-color: rgba(253, 106, 132, 1);
+    caret-color: var(--primary-pink);
 
     &:focus {
       border: 1px solid #495057;
@@ -221,7 +226,7 @@ nav {
     border-radius: 4px;
 
     outline: none;
-    caret-color: rgba(253, 106, 132, 1);
+    caret-color: var(--primary-pink);
 
     &:focus {
       border: 1px solid #495057;
@@ -252,8 +257,8 @@ nav {
       justify-content: center;
       align-items: center;
 
-      color: #f35c77;
-      background: #ffebee;
+      color: var(--primary-pink);
+      background: var(--primary-pink-bg);
       border-radius: 4px;
 
       span {
@@ -299,7 +304,7 @@ nav {
 
     &[name="cancel"] {
       color: #343a40;
-      background: #f1f1f1;
+      background: #e9ecef;
 
       &:hover,
       &:active {
@@ -309,12 +314,65 @@ nav {
 
     &[name="submit"] {
       color: #ffffff;
-      background: #fd6a84;
+      background: var(--primary-pink);
 
       &:hover,
       &:active {
-        background: #ff5c79;
+        background: var(--primary-pink);
       }
     }
+  }
+}
+
+#modal {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: white;
+
+  main {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .modal-icon {
+    display: flex;
+    justify-content: center;
+    margin-top: 12px;
+    margin-bottom: 16px;
+  }
+
+  .modal-message {
+    width: 272px;
+    margin-left: 24px;
+    margin-right: 24px;
+    margin-bottom: 12px;
+  }
+
+  .modal-message__title {
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 27px;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .modal-message__annotation {
+    height: 20px;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+    color: #868e96;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

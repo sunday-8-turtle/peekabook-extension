@@ -1,6 +1,6 @@
 import "./index.scss";
 import { getUser } from "../apis/user";
-import { createBookmark } from "../apis/bookmark";
+import { createBookmark, verifyDuplication } from "../apis/bookmark";
 import { bookmarkRequest } from "../types/bookmark.types";
 
 init();
@@ -10,8 +10,9 @@ init();
  */
 async function init() {
   const { title, url, id: tabId } = await getCurrentTab();
-
   triggerIconChange();
+
+  // checkIfDuplicated(url);
   checkIfLoggedIn();
 
   setUrl(url);
@@ -170,7 +171,11 @@ function onSubmit() {
     const notidate = getFormattedRemindDate();
     requestData.notidate = notidate;
 
-    createBookmark(requestData);
+    const message = "즐겨찾기가 완료 되었습니다.";
+    const annotation = formData.get("url");
+
+    openModal(message, annotation);
+    setTimeout(closePopup, 1000);
   };
 }
 
@@ -206,7 +211,12 @@ function onCreateTag(tagInput) {
 
     const deleteBtn = document.createElement("button");
     deleteBtn.addEventListener("click", onDeleteTag(newTag));
-    deleteBtn.innerHTML = `<img src="icon-x.svg" alt="태그 삭제 아이콘">`;
+    deleteBtn.innerHTML = `
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="12" height="12" rx="6" fill="#DFB3BA"/>
+        <path d="M4 4L8 8" stroke="white" stroke-linecap="round"/>
+        <path d="M4 8L8 4" stroke="white" stroke-linecap="round"/>
+      </svg>`;
 
     newTag.append(newSpan, deleteBtn);
     targetElement.append(newTag);
@@ -234,9 +244,30 @@ function onCreateTag(tagInput) {
   };
 }
 
+function openModal(message, annotation) {
+  const modal = document.querySelector("#modal");
+  (modal.querySelector(".modal-message__title") as HTMLElement).innerText =
+    message;
+  (modal.querySelector(".modal-message__annotation") as HTMLElement).innerText =
+    annotation;
+
+  (modal as HTMLElement).style.display = "block";
+}
+
 /*
  * Chrome APIs
  */
+async function checkIfDuplicated(url) {
+  const res = await verifyDuplication(url);
+
+  const isDuplicated = res.data.duplication;
+  if (!isDuplicated) return;
+
+  const message = "이미 즐겨찾기가 완료된 페이지입니다.";
+  const annotation = url;
+  openModal(message, annotation);
+}
+
 async function checkIfLoggedIn() {
   chrome.storage.sync.get(["token"], async function (result) {
     const res = await getUser();
