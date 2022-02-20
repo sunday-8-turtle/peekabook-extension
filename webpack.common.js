@@ -38,7 +38,6 @@ module.exports = {
         { from: "./src/assets/128x128.png" },
         { from: "./src/assets/bell.svg" },
         { from: "./src/assets/bell-off.svg" },
-        { from: "./src/assets/icon-x.svg" },
         { from: "./src/assets/icon-check.svg" },
       ],
     }),

@@ -12,7 +12,7 @@ async function init() {
   const { title, url, id: tabId } = await getCurrentTab();
   triggerIconChange();
 
-  // checkIfDuplicated(url);
+  checkIfDuplicated(url);
   checkIfLoggedIn();
 
   setUrl(url);
@@ -142,7 +142,7 @@ function onClickNoti(notiDropdown) {
 }
 
 function onSubmit() {
-  return function (e) {
+  return async function (e) {
     e.preventDefault();
 
     const requestData: bookmarkRequest = {
@@ -171,6 +171,7 @@ function onSubmit() {
     const notidate = getFormattedRemindDate();
     requestData.notidate = notidate;
 
+    await createBookmark(requestData);
     const message = "즐겨찾기가 완료 되었습니다.";
     const annotation = formData.get("url");
 
@@ -259,7 +260,6 @@ function openModal(message, annotation) {
  */
 async function checkIfDuplicated(url) {
   const res = await verifyDuplication(url);
-
   const isDuplicated = res.data.duplication;
   if (!isDuplicated) return;
 

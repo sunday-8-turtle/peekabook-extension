@@ -33,13 +33,9 @@ async function verifyDuplication(url: string) {
   const requestUrl = new URL(
     `${process.env.API_BASE_URL}/bookmark/duplication`
   );
-  // const params = { url };
-  // Object.keys(params).forEach((key) =>
-  //   requestUrl.searchParams.append(key, params[key])
-  // );
 
   const res = await fetch(requestUrl.toString(), {
-    method: "GET",
+    method: "POST",
     headers,
     body: JSON.stringify({ url }),
   });
