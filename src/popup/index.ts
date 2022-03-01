@@ -12,9 +12,6 @@ async function init() {
   const { title, url, id: tabId } = await getCurrentTab();
   triggerIconChange();
 
-  checkIfDuplicated(url);
-  checkIfLoggedIn();
-
   setUrl(url);
   setTitle(title);
   setDesc(tabId);
@@ -22,6 +19,9 @@ async function init() {
   setFormSaveHandler();
   setFormCancelHandler();
   setTagHandler();
+
+  await checkIfLoggedIn();
+  await checkIfDuplicated(url);
 
   function setTitle(title) {
     (document.querySelector('input[name="title"]') as HTMLInputElement).value =
@@ -176,7 +176,7 @@ function onSubmit() {
     const annotation = formData.get("url");
 
     openModal(message, annotation);
-    setTimeout(closePopup, 1000);
+    // setTimeout(closePopup, 1000);
   };
 }
 
