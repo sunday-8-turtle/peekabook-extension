@@ -271,13 +271,33 @@ async function checkIfDuplicated(url) {
 async function checkIfLoggedIn() {
   chrome.storage.sync.get(["token"], async function (result) {
     const res = await getUser();
+
+    const extensionId = chrome.runtime.id;
+    const query = {
+      "login-for": "extension",
+      "extension-id": extensionId,
+    };
+    let newTabBaseUrl = process.env.VUE_APP_URL;
+    newTabBaseUrl = addQuery(newTabBaseUrl, query);
+
     if (!result.token || res.errorCode === "AUTH_INVALID_TOKEN") {
-      chrome.tabs.create({
-        active: true,
-        url: process.env.VUE_APP_URL,
-      });
+      createTab({ active: true, url: newTabBaseUrl });
     }
   });
+}
+
+function addQuery(url, query) {
+  let result = url + "?";
+
+  for (const key in query) {
+    result += `${key}=${query[key]}&`;
+  }
+
+  return result;
+}
+
+function createTab({ ...options }) {
+  chrome.tabs.create(options);
 }
 
 function triggerIconChange() {
