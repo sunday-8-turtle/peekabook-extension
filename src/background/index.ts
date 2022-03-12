@@ -30,7 +30,6 @@ function toggleIcon(iconPath) {
  */
 chrome.runtime.onMessageExternal.addListener(function (message) {
   const token = message.token;
-  console.log(message, "왔어요???");
   chrome.storage.sync.set({ token });
 });
 

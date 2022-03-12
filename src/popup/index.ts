@@ -49,13 +49,18 @@ async function init() {
           ) as HTMLInputElement
         ).value = message.desc;
 
-        const bookmarkImage = document.querySelector(
-          "#bookmark-url-with-img > img"
+        const bookmarkIconImage = document.querySelector(
+          ".bookmark-og-icon"
         ) as HTMLImageElement;
-        bookmarkImage.src = message.image;
-        bookmarkImage.onerror = function () {
+        bookmarkIconImage.src = message.ogIconImage;
+        bookmarkIconImage.onerror = function () {
           this.src = "16x16_활성.png";
         };
+
+        const bookmarkContentImage = document.querySelector(
+          ".bookmark-og-content"
+        ) as HTMLImageElement;
+        bookmarkContentImage.src = message.ogContentImage;
       }
     });
   }
@@ -150,6 +155,7 @@ function onSubmit() {
       url: "",
       description: "",
       tags: [],
+      image: "",
       notidate: "",
     };
 
@@ -171,12 +177,18 @@ function onSubmit() {
     const notidate = getFormattedRemindDate();
     requestData.notidate = notidate;
 
+    // add content image
+    const image = document.querySelector(
+      ".bookmark-og-content"
+    ) as HTMLImageElement;
+    requestData.image = image.src;
+
     await createBookmark(requestData);
     const message = "즐겨찾기가 완료 되었습니다.";
     const annotation = formData.get("url");
 
     openModal(message, annotation);
-    // setTimeout(closePopup, 1000);
+    setTimeout(closePopup, 1000);
   };
 }
 
