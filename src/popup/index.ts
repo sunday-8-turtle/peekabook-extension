@@ -20,7 +20,7 @@ async function init() {
   setFormCancelHandler();
   setTagHandler();
 
-  await checkIfLoggedIn();
+  await checkIfLoggedIn(tabId);
   await checkIfDuplicated(url);
 
   function setTitle(title) {
@@ -280,7 +280,7 @@ async function checkIfDuplicated(url) {
   openModal(message, annotation);
 }
 
-async function checkIfLoggedIn() {
+async function checkIfLoggedIn(tabId) {
   chrome.storage.sync.get(["token"], async function (result) {
     const res = await getUser();
 
@@ -292,9 +292,10 @@ async function checkIfLoggedIn() {
     let newTabBaseUrl = process.env.VUE_APP_URL;
     newTabBaseUrl = addQuery(newTabBaseUrl, query);
 
-    if (!result.token || res.errorCode === "AUTH_INVALID_TOKEN") {
-      createTab({ active: true, url: newTabBaseUrl });
-    }
+    createTab({ active: true, url: newTabBaseUrl, currentTabId: tabId });
+    // if (!result.token || res.errorCode === "AUTH_INVALID_TOKEN") {
+    //   createTab({ active: true, url: newTabBaseUrl });
+    // }
   });
 }
 
@@ -309,7 +310,7 @@ function addQuery(url, query) {
 }
 
 function createTab({ ...options }) {
-  chrome.tabs.create(options);
+  chrome.runtime.sendMessage({ type: "tab-created", options });
 }
 
 function triggerIconChange() {

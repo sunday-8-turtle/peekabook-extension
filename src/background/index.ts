@@ -7,6 +7,15 @@ chrome.runtime.onMessage.addListener((message) => {
   if (message.type === "activate-icon") {
     toggleIcon("16x16_활성.png");
   }
+  if (message.type === "tab-created") {
+    const { active, url, currentTabId } = message.options;
+    chrome.tabs.create({ active, url }, async (tab) => {
+      chrome.storage.sync.set({
+        loginTabId: tab.id,
+        currentTabId: currentTabId,
+      });
+    });
+  }
 });
 
 chrome.runtime.onConnect.addListener(function (port) {
@@ -20,7 +29,7 @@ chrome.runtime.onConnect.addListener(function (port) {
 function toggleIcon(iconPath) {
   chrome.action.setIcon({
     path: {
-      "16": iconPath,
+      16: iconPath,
     },
   });
 }
@@ -31,6 +40,12 @@ function toggleIcon(iconPath) {
 chrome.runtime.onMessageExternal.addListener(function (message) {
   const token = message.token;
   chrome.storage.sync.set({ token });
+  chrome.storage.sync.get(["loginTabId", "currentTabId"], (result) => {
+    chrome.tabs.remove(result.loginTabId);
+    chrome.storage.sync.remove("loginTabId");
+
+    chrome.tabs.update(result.currentTabId, { active: true });
+  });
 });
 
 /**
