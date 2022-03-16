@@ -292,10 +292,9 @@ async function checkIfLoggedIn(tabId) {
     let newTabBaseUrl = process.env.VUE_APP_URL;
     newTabBaseUrl = addQuery(newTabBaseUrl, query);
 
-    createTab({ active: true, url: newTabBaseUrl, currentTabId: tabId });
-    // if (!result.token || res.errorCode === "AUTH_INVALID_TOKEN") {
-    //   createTab({ active: true, url: newTabBaseUrl });
-    // }
+    if (!result.token || res.errorCode === "AUTH_INVALID_TOKEN") {
+      createTab({ active: true, url: newTabBaseUrl, currentTabId: tabId });
+    }
   });
 }
 
