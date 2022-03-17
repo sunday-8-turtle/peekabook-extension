@@ -284,6 +284,8 @@ async function checkIfLoggedIn(tabId) {
   chrome.storage.sync.get(["token"], async function (result) {
     const res = await getUser();
 
+    console.log('여기야 여기', res, )
+
     const extensionId = chrome.runtime.id;
     const query = {
       "login-for": "extension",

@@ -38,7 +38,7 @@ function toggleIcon(iconPath) {
  * 웹 앱에서 토큰 전달받아서 저장
  */
 chrome.runtime.onMessageExternal.addListener(function (message) {
-  const token = message.token;
+  const token = message;
   chrome.storage.sync.set({ token });
   chrome.storage.sync.get(["loginTabId", "currentTabId"], (result) => {
     chrome.tabs.remove(result.loginTabId);
