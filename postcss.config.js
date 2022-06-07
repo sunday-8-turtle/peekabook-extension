@@ -1,4 +1,4 @@
-if (process.env.NODE_EV === "production") {
+if (process.env.MODE === "production") {
   module.exports = {
     plugins: {
       cssnano: {},

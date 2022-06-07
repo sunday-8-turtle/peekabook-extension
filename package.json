@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "webpack --watch --config webpack.dev.js",
+    "dev:build": "webpack --config webpack.dev.js --env development",
     "build": "webpack --config webpack.prod.js --env production"
   },
   "author": "",

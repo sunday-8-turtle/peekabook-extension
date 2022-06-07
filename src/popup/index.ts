@@ -40,7 +40,9 @@ async function init() {
   }
 
   function setDesc(tabId) {
-    chrome.tabs.connect(tabId);
+    chrome.runtime.onConnect.addListener(() => {
+      chrome.tabs.connect(tabId);
+    });
     chrome.runtime.onMessage.addListener((message) => {
       if (message.type === "og" && message.desc) {
         (
@@ -272,7 +274,7 @@ function openModal(message, annotation) {
  */
 async function checkIfDuplicated(url) {
   const res = await verifyDuplication(url);
-  const isDuplicated = res.data.duplication;
+  const isDuplicated = res.data?.duplication;
   if (!isDuplicated) return;
 
   const message = "이미 즐겨찾기가 완료된 페이지입니다.";
@@ -283,8 +285,6 @@ async function checkIfDuplicated(url) {
 async function checkIfLoggedIn(tabId) {
   chrome.storage.sync.get(["token"], async function (result) {
     const res = await getUser();
-
-    console.log('여기야 여기', res, )
 
     const extensionId = chrome.runtime.id;
     const query = {

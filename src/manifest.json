@@ -1,6 +1,6 @@
 {
-  "name": "Peekabook",
-  "description": "Peekabook dev version.",
+  "name": "피카북(Peekabook)",
+  "description": "언제 어디서나 사용 가능한 북마크 서비스",
   "version": "1.0",
   "manifest_version": 3,
   "background": {
@@ -19,7 +19,6 @@
   ],
   "permissions": [
     "tabs",
-    "scripting",
     "storage"
   ],
   "externally_connectable": {
