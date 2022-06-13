@@ -40,11 +40,8 @@ async function init() {
   }
 
   function setDesc(tabId) {
-    chrome.runtime.onConnect.addListener(() => {
-      chrome.tabs.connect(tabId);
-    });
-    chrome.runtime.onMessage.addListener((message) => {
-      if (message.type === "og" && message.desc) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      chrome.tabs.sendMessage(tabId, { greeting: "hello" }, function (message) {
         (
           document.querySelector(
             'textarea[name="description"]'
@@ -56,14 +53,14 @@ async function init() {
         ) as HTMLImageElement;
         bookmarkIconImage.src = message.ogIconImage;
         bookmarkIconImage.onerror = function () {
-          this.src = "./16x16_활성.png";
+          this.src = "./icon16-active.png";
         };
 
         const bookmarkContentImage = document.querySelector(
           ".bookmark-og-content"
         ) as HTMLImageElement;
         bookmarkContentImage.src = message.ogContentImage;
-      }
+      });
     });
   }
 

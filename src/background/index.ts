@@ -5,7 +5,7 @@ import { verifyDuplication } from "../apis/bookmark";
  */
 chrome.runtime.onMessage.addListener((message) => {
   if (message.type === "activate-icon") {
-    toggleIcon("./16x16_활성.png");
+    toggleIcon("./icon16-active.png");
   }
   if (message.type === "tab-created") {
     const { active, url, currentTabId } = message.options;
@@ -21,7 +21,7 @@ chrome.runtime.onMessage.addListener((message) => {
 chrome.runtime.onConnect.addListener(function (port) {
   if (port.name === "popup") {
     port.onDisconnect.addListener(function () {
-      toggleIcon("./16x16_비활성.png");
+      toggleIcon("./icon16-inactive.png");
     });
   }
 });

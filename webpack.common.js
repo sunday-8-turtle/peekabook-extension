@@ -31,11 +31,11 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         { from: "./src/manifest.json" },
-        { from: "./src/assets/16x16_활성.png" },
         { from: "./src/assets/logo.png" },
-        { from: "./src/assets/16x16_비활성.png" },
-        { from: "./src/assets/48x48.png" },
-        { from: "./src/assets/128x128.png" },
+        { from: "./src/assets/icon16-active.png" },
+        { from: "./src/assets/icon16-inactive.png" },
+        { from: "./src/assets/icon48.png" },
+        { from: "./src/assets/icon128.png" },
         { from: "./src/assets/bell.svg" },
         { from: "./src/assets/bell-off.svg" },
         { from: "./src/assets/icon-check.svg" },

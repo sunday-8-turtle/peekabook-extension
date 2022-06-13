@@ -1,7 +1,7 @@
 {
   "name": "피카북(Peekabook)",
   "description": "언제 어디서나 사용 가능한 북마크 서비스",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"
@@ -30,12 +30,12 @@
   "action": {
     "default_popup": "index.html",
     "default_icon": {
-      "16": "16x16_비활성.png"
+      "16": "icon16-inactive.png"
     }
   },
   "icons": {
-    "16": "16x16_비활성.png",
-    "48": "48x48.png",
-    "128": "128x128.png"
+    "16": "icon16-inactive.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
   }
 }
