@@ -56,7 +56,7 @@ async function init() {
         ) as HTMLImageElement;
         bookmarkIconImage.src = message.ogIconImage;
         bookmarkIconImage.onerror = function () {
-          this.src = "16x16_활성.png";
+          this.src = "./16x16_활성.png";
         };
 
         const bookmarkContentImage = document.querySelector(
@@ -109,10 +109,10 @@ async function init() {
       const notiImg = document.querySelector("#noti > img") as HTMLImageElement;
       const notiDate = notiDateSpan.dataset.notiDate;
 
-      let notiImgSrc = "bell.svg";
+      let notiImgSrc = "./bell.svg";
       let notiTextColor = "#868E96";
       if (notiDate === "끄기") {
-        notiImgSrc = "bell-off.svg";
+        notiImgSrc = "./bell-off.svg";
         notiTextColor = "#CED4DA";
       }
       notiImg.src = notiImgSrc;
