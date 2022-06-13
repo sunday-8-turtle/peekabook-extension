@@ -41,25 +41,25 @@ async function init() {
 
   function setDesc(tabId) {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      chrome.tabs.sendMessage(tabId, { greeting: "hello" }, function (message) {
+      chrome.tabs.sendMessage(tabs[0].id, { type: "og" }, function (message) {
         (
           document.querySelector(
             'textarea[name="description"]'
           ) as HTMLInputElement
-        ).value = message.desc;
+        ).value = message?.desc;
 
         const bookmarkIconImage = document.querySelector(
           ".bookmark-og-icon"
         ) as HTMLImageElement;
-        bookmarkIconImage.src = message.ogIconImage;
+
+        bookmarkIconImage.src = message?.ogIconImage;
         bookmarkIconImage.onerror = function () {
           this.src = "./icon16-active.png";
         };
-
         const bookmarkContentImage = document.querySelector(
           ".bookmark-og-content"
         ) as HTMLImageElement;
-        bookmarkContentImage.src = message.ogContentImage;
+        bookmarkContentImage.src = message?.ogContentImage;
       });
     });
   }

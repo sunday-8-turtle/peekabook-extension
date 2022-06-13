@@ -1,4 +1,4 @@
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   let ogDescription = "";
   let ogContentImage = "";
   let ogIconImage = "";
@@ -21,7 +21,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       .getAttribute("href");
   }
 
-  if (request.greeting === "hello")
+  if (message.type === "og")
     sendResponse({
       type: "og",
       desc: ogDescription,
